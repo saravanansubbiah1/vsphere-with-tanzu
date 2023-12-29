@@ -1,3 +1,4 @@
+#!/bin/bash
 #!/bin/sh
 
 read -p 'Username:' k_username
@@ -14,7 +15,7 @@ if [ -s login_error.txt ]; then
     cat login_error.txt
     rm -f login_error.txt
     rm -f login_out.txt
-    exit 1
+    kubectl vsphere logout 2>&1 >/dev/null
 else
     ns_context=$(kubectl config use-context "$k_cluster_namespace" 2>ns_login_error.txt 1>ns_login_out.txt ) 
     if [ -s ns_login_error.txt ]; then
@@ -22,29 +23,29 @@ else
         cat ns_login_error.txt
         rm -f ns_login_error.txt
         rm -f ns_login_out.txt
-        exit 1
+        kubectl vsphere logout 2>&1 >/dev/null
     else
         echo "Logged into Namespace Context"
         secretname=$k_cluster_name"-ssh-password"
         echo "Retrieving secret value"
-        get_secret=$(kubectl get secret "$secretname" -o yaml | grep ssh-passwordkey | awk '{print $2}' | base64 -d 2>getsecret_error.txt 1>getsecret_out.txt)
+        get_secret=$((kubectl get secret "$secretname" -o yaml | grep ssh-passwordkey | awk '{print $2}' | base64 -d) 2>getsecret_error.txt 1>getsecret_out.txt)
         if [ -s getsecret_error.txt ]; then
             echo "Error occured while retrieving secret:"
             cat getsecret_error.txt
             rm -f getsecret_error.txt
             rm -f getsecret_out.txt
-            exit 1
+	    kubectl vsphere logout 2>&1 >/dev/null
         else
-            echo "Password for your cluster nodes: $get_secret"
+            echo "Password for your cluster nodes: $(cat getsecret_out.txt)"
             rm -f getsecret_out.txt
             rm -f getsecret_error.txt
-            exit 0
+	    kubectl vsphere logout 2>&1 >/dev/null
         fi
         rm -f ns_login_error.txt
         rm -f ns_login_out.txt
-        exit 0
+	kubectl vsphere logout 2>&1 >/dev/null
     fi
     rm -f login_error.txt
     rm -f login_out.txt
-    exit 0
+    kubectl vsphere logout 2>&1 >/dev/null
 fi
