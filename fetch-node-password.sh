@@ -48,4 +48,3 @@ else
     rm -f login_out.txt
     exit 0
 fi
-gitcheck 
