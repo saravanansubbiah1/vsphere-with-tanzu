@@ -1,4 +1,3 @@
 **Purpose**
 
-
-Fetching your vSphere with Tanzu Guest Cluster nodes' ssh-password (for vmware-system-user) can be done with a couple of kubectl commands. But it can be overwhelming when you are managing hundreds of clusters. In attempt to reduce the effort involved, this script has been written.
+Managing a vSphere with Tanzu infra that has 100s of clusters or 1000s of pods can become overwhelming quickly. These scripts here aim at reducing the effort involved in managing such a large scale infrastructure.  
